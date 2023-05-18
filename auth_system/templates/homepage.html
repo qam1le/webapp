@@ -1,0 +1,26 @@
+{% if user.is_authenticated %}
+<!DOCTYPE html>
+<head>
+    <title>SVEIKI</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body class="body">
+    <header class="header"> </header>
+<!------------------MENIU------------------------->
+    <div class="sidenav">
+        <p class="greeting">Sveiki {{request.user.username}}</p>
+        <a href="{% url 'Homepage' %}">Pagrindinis</a>
+        <a href="{% url 'Toolpage' %}">Įrankis</a>
+        <a href="{% url 'Toolqueries' %}">Užklausos</a>
+        <a href="#">Apie</a>
+        <a href="#">Kontaktai</a>
+        <button class="logout"><a href="{% url 'Logout' %}">ATSIJUNGTI</a></button>
+    </div>
+
+    <h1>Sėkmingai prisijungėte</h1>
+    <p>Informacija apie praeitas užklausas??? Naujienos?</p>
+
+</body>
+{% endif %}

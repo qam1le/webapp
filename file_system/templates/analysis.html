@@ -1,0 +1,71 @@
+{% if user.is_authenticated %}
+<!--NUOTRAUKU IKELIMAS ANALIZEI-->
+<!DOCTYPE html>
+<head>
+    <title>NUOTRAUKU ANALIZE</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body class = "body">
+    <header class="header"> </header>
+<!------------------MENIU------------------------->
+    <div class="sidenav">
+        <p class="greeting">Sveiki {{request.user.username}}</p>
+        
+        <a href="{% url 'Homepage' %}">Pagrindinis</a>
+        <a href="{% url 'Toolpage' %}">Įrankis</a>
+        <a href="{% url 'Toolqueries' %}">Užklausos</a>
+        <a href="#">Apie</a>
+        <a href="#">Kontaktai</a>
+        
+        <button class="logout"><a href="{% url 'Logout' %}">ATSIJUNGTI</a></button>
+    </div>
+
+    <br>
+    <p style="color:white; font-weight: bolder; margin-left: 150px;">↓↓↓Naujausiai įkeltas failas↓↓↓</p>
+    <div class = "box-analysis">
+    {% if image %}
+        <img class = "image" src="{{ image.image_file.url }}">    
+        <iframe class="queryres" width="720" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" 
+        src="https://maps.google.com/maps?q={{image.lat}},{{image.lon}}&hl=es;z=14&amp;output=embed">
+        <a href="https://www.maps.ie/distance-area-calculator.html">measure area map</a></iframe>
+    {% else %}
+        <p class="image">Ką nors įkelkite :)</p>
+    {% endif %}
+    </div>
+
+    <br>
+
+    <form class="box" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn" type="submit" value="Įkelti">
+      </form>
+
+    <br><br>
+    <div class = "box-analysis">
+        <p>Sugeneruota informacija: </p>
+        <table>
+            {% if image %}
+            <tbody>
+                <tr>
+                    <td>Pavadinimas&nbsp;</td>
+                    <td>Koordinatės&nbsp;</td>
+                    <td>Spėjimo patikimumas&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <td>{{ image.image_name }}&nbsp;</td> <!--reik imest image name or smt etc-->
+                {% if image.lat %}
+                    <td>{{ image.lat }}, {{ image.lon }}&nbsp;</td>
+                {% else %}
+                    <td>GPS info nerasta&nbsp;</td>
+                {%endif%}
+                    <td>100%&nbsp;</td>
+                </tr>
+            </tbody>
+            {% endif %}
+        </table>
+    </div>
+</body>
+{% endif %}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<head>
+    <title>PAGRINDINIS</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body class = "body">
+    <header class="header"> </header>
+<!------------------MENIU------------------------->
+    <div class="sidenav">
+        <a href="{% url 'Index' %}">Pagrindinis</a>
+        <a href="{% url 'Register' %}">Registruotis</a>
+        <a href="#">Apie</a>
+        <a href="#">Kontaktai</a>
+    </div>
+<!------------------PRISIJUNGIMO FORMA------------------------->
+    <br>
+    <div class="box">
+        <h1>SVEIKI</h1>
+        <form action="" method="POST">{% csrf_token %}
+            {% if messages %}
+            {% for message in messages %}
+                <div style="background-color: red; color:white; border-radius:20px;" class="alert-dismissible" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% endif %}
+            
+            
+            <!-- INPUT FORMS -->
+            <label style="float:inherit;" for="username">Įveskite prisijungimo vardą</label><br>
+            <input class="form" type="text" id="username" name="username" placeholder="PRISIJUNGIMO VARDAS" required><br>
+            <br>
+            <label for="password">Įveskite slaptažodį</label><br>
+            <input class="form" type="password" id="password" name="password" placeholder="SLAPTAŽODIS" required><br>
+            <!-- CHECKBOX -->
+            <input type="checkbox" id="remember_me" name="remember_me" value="Remember">
+            <label for="remember_me">Įsiminti</label>
+            
+            <br><br>
+
+            <!-- SUBMIT BUTTON -->
+            <input class="btn" type="submit" value="PRISIJUNGTI">
+        <br>
+<!------------------NUORODA I REGISTRACIJA------------------------->
+        <p><b>Lankotės pirmą kartą?</b><br><br> <a href="{% url 'Register' %}" class="hyperlink">REGISTRUOKITĖS</a></p>
+        <br>
+    </div>
+</body>
