@@ -17,12 +17,11 @@ def Tool(request):
             image.user = request.user
             image.save()
             
-            try:
-                lat, lon = Extract_Exif(image.image_file.path)
-                image.lat, image.lon = lat, lon
-                image.save()
-            except:
-                lat, lon = 0, 0
+            
+            lat, lon = Extract_Exif(image.image_file.path)
+            image.lat, image.lon = lat, lon
+            image.save()
+            
 
             #form.save()
             #try:
@@ -43,7 +42,7 @@ def Tool(request):
         image = None
     return render(request, 'analysis.html', {'form':form, 'image':image})
 
-@login_required
+#@login_required
 def Extract_Exif(image):
     data = gpsphoto.getGPSData(image)
     lat = 0
