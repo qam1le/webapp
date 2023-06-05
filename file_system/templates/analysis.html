@@ -5,6 +5,7 @@
     <title>NUOTRAUKU ANALIZE</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body class = "body">
@@ -23,49 +24,92 @@
     </div>
 
     <br>
+    {% if image %}
     <p style="color:white; font-weight: bolder; margin-left: 150px;">↓↓↓Naujausiai įkeltas failas↓↓↓</p>
+    {%endif%}
     <div class = "box-analysis">
     {% if image %}
         <img class = "image" src="{{ image.image_file.url }}">    
+    {% if google.latitude %}
+        <iframe class="queryres" width="720" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" 
+        src="https://maps.google.com/maps?q={{google.latitude}},{{google.longitude}}&hl=es;z=14&amp;output=embed">
+        <a href="https://www.maps.ie/distance-area-calculator.html">measure area map</a></iframe>
+    {% elif not google.latitude and image.lat  %}
         <iframe class="queryres" width="720" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" 
         src="https://maps.google.com/maps?q={{image.lat}},{{image.lon}}&hl=es;z=14&amp;output=embed">
         <a href="https://www.maps.ie/distance-area-calculator.html">measure area map</a></iframe>
+    {% else %}
+    <p>Nepavyko rasti koordinaciu</p>
+    {% endif %}
     {% else %}
         <p class="image">Ką nors įkelkite :)</p>
     {% endif %}
     </div>
 
     <br>
-
+    {% if messages %}
+    {% for message in messages %}
+        <div style="background-color: red; color:white; border-radius:20px;" class="alert-dismissible" role="alert">
+            {{ message }}
+            <br>
+        </div>
+    {% endfor %}
+    {% endif %}
     <form class="box" method="POST" enctype="multipart/form-data">{% csrf_token %}
         {{ form.as_p }}
         <input class="btn" type="submit" value="Įkelti">
       </form>
-
+    
     <br><br>
+        {% if image %}
     <div class = "box-analysis">
-        <p>Sugeneruota informacija: </p>
+        <p>EXIF INFORMACIJA: </p>
         <table>
-            {% if image %}
             <tbody>
                 <tr>
-                    <td>Pavadinimas&nbsp;</td>
+                    <td>Failo pavadinimas&nbsp;</td>
                     <td>Koordinatės&nbsp;</td>
-                    <td>Spėjimo patikimumas&nbsp;</td>
                 </tr>
 
                 <tr>
-                    <td>{{ image.image_name }}&nbsp;</td> <!--reik imest image name or smt etc-->
+                    <td>{{ image.image_name }}&nbsp;</td>
                 {% if image.lat %}
                     <td>{{ image.lat }}, {{ image.lon }}&nbsp;</td>
                 {% else %}
                     <td>GPS info nerasta&nbsp;</td>
                 {%endif%}
-                    <td>100%&nbsp;</td>
                 </tr>
             </tbody>
             {% endif %}
         </table>
+    </div>
+
+    <br>
+        {% if google %}
+    <div class = "box-analysis">
+        <p>SUGENERUOTI DUOMENYS:</p>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Objekto pavadinimas&nbsp;</td>
+                    <td>Koordinatės&nbsp;</td>
+                    <td>Spėjimo patikimumas&nbsp;</td>
+                </tr>
+
+                <tr>
+                    {% if google.description %}
+                    <td>{{ google.description }}&nbsp;</td>
+                    <td>{{ google.latitude }}, {{ google.longitude }}&nbsp;</td>
+                    <td>{{ google.score }}%&nbsp;</td>
+                    {% else %}
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    {%endif%}
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
     </div>
 </body>
 {% endif %}

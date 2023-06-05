@@ -4,6 +4,7 @@
     <title>SVEIKI</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body class="body">
@@ -19,8 +20,8 @@
         <button class="logout"><a href="{% url 'Logout' %}">ATSIJUNGTI</a></button>
     </div>
 
-    <h1>Sėkmingai prisijungėte</h1>
-    <p>Informacija apie praeitas užklausas??? Naujienos?</p>
+    <h1 class="greeting">Sėkmingai prisijungėte</h1>
+    <p style="color:white">Readme failas apie atnaujinimus is github</p>
 
 </body>
 {% endif %}

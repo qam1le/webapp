@@ -28,7 +28,6 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-
 ALLOWED_HOSTS = os.version.get('ALLOWED_HOSTS').split(' ')
 
 
@@ -78,7 +77,6 @@ WSGI_APPLICATION = 'kursinis.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
- 
 
 DATABASES = {
     'default': {
@@ -86,7 +84,8 @@ DATABASES = {
         #'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'django_kursinis',
-        'USER': 'root',
+        'USER': config('USERNAME'),
+        'PASSWORD': config('PASSWORD'),
         'HOST': 'localhost',
         'PORT': '3306',
     }
