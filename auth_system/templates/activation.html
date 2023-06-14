@@ -1,0 +1,7 @@
+{% autoescape off %}
+Sveiki {{ request.user.username }},
+
+Dėkojame už Jūsų registraciją į kamivision.site. Norint patvirtinti registraciją, prašome paspausti žemiau esančią nuorodą.
+
+http://{{ domain }}{% url 'Activate' uidb64=uid token=token %}
+{% endautoescape %}

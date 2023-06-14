@@ -1,0 +1,45 @@
+{% if user.is_authenticated %}
+<!DOCTYPE html>
+<head>
+    <title>UZKLAUSU ISTORIJA</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="body">
+    <header class="header"></header>
+    <!------------------MENIU------------------------->
+    <div class="sidenav">
+        <p class="greeting">Sveiki {{request.user.username}}</p>
+        <a href="{% url 'Homepage' %}">Pagrindinis</a>
+        <a href="{% url 'Toolpage' %}">Įrankis</a>
+        <a href="{% url 'Toolqueries' %}">Užklausos</a>
+        <a href="#">Apie</a>
+        <a href="#">Kontaktai</a>
+        <button class="logout"><a href="{% url 'Logout' %}">ATSIJUNGTI</a></button>
+    </div>
+
+    <br><br>
+
+    {% if image %}
+    <div class = "box" style="height:50%; width:50%; margin:auto;">
+        <img class = "image" src="{{ image.image_file.url }}">
+    </div>
+
+    <form class="box" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>Failo pavadinimas</p>
+        {{ form.image_name }}
+        <p>Failo užrašai</p>
+        {{    form.notes   }}
+        <br>
+        <input class="btn" type="submit" value="Išsaugoti">
+        <br><br>
+        <button class="btn" type="submit" style="float:right;"><a style="color:white;" href="{% url 'Toolqueries' %}">Atšaukti</a></button>
+        <br>
+    </form>
+
+    {%endif%}
+
+{%endif%}

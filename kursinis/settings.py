@@ -26,9 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = os.version.get('ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS =  config('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -83,10 +83,10 @@ DATABASES = {
         #'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_kursinis',
-        'USER': config('USERNAME'),
+        'NAME': 'sudokewl$default',
+        'USER': 'sudokewl',
         'PASSWORD': config('PASSWORD'),
-        'HOST': 'localhost',
+        'HOST': config('DB_HOST'),
         'PORT': '3306',
     }
 }
@@ -138,7 +138,7 @@ LOGIN_URL = 'Login'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CSRF_TRUSTED_ORIGINS = os.version.get('CSRF_TRUSTED_ORIGINS').split(' ')
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS')
 
 MESSAGE_TAGS = {
         messages.DEBUG: 'alert-secondary',
@@ -147,3 +147,35 @@ MESSAGE_TAGS = {
         messages.WARNING: 'alert-warning',
         messages.ERROR: 'alert-danger',
 }
+
+#EMAIL CONFIRMATION
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = config('EMAIL_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
+EMAIL_PORT = 587 
+EMAIL_USE_TLS = True
+PASSWORD_RESET_TIMEOUT = 900
+
+#PASSWORD VALIDATION BY DJANGO
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "OPTIONS": {
+            'max_similarity': 0.6,
+            'user_attributes': ("username", "email")
+        },
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 9,
+        },
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]

@@ -18,5 +18,11 @@
     </div>
 
     <h1>Sveiki atvyke :)</h1>
-
+    {% if messages %}
+    {% for message in messages %}
+        <div style="background-color: red; color:white; border-radius:20px;" class="alert-dismissible" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
 </body>

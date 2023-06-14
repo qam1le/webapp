@@ -6,10 +6,9 @@ from auth_system import views
 
 urlpatterns = [
     path('tool/', Tool, name='Toolpage'),
-    #path('imgup/', Image_Upload, name='Imgupload'),
     path('queries/', ToolQueries, name='Toolqueries'),
-    #path('imgview/', Image_Display, name='Imgdisplay'),
-    #path('images/<int:image_id>/', ViewItem, name='Viewitem'),
+    path('edit/<int:image_id>/', EditItem, name='Edititem'),
+    #path('images/<int:image_id>/', EditItem, name='Edititem'),
     path('images/delete/<int:image_id>/', DeleteItem, name='Deleteitem'),
     path('logout/', views.Logout, name='Logout'),
 ]

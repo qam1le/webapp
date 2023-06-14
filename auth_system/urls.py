@@ -7,7 +7,11 @@ urlpatterns = [
     path('index/', Index, name='Index'),
     path('register/', Register, name='Register'),
     path('login/', Login, name='Login'),
+    path('activate/<uidb64>/<token>', Activate, name='Activate'),
 
     path('home/', Homepage, name='Homepage'),
     path('logout/', Logout, name='Logout'),
+    
+    #path('reset_password', resetPassword, name='Resetpswd'),
+    #path('reset/<uidb64>/<token>', confirmReset, name='Resetconfirm'),
 ]

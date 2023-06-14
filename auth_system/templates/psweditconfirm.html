@@ -1,0 +1,35 @@
+{% if validlink %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SLAPTAŽODŽIO PAKEITIMAS</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+
+    {% if messages %}
+    {% for message in messages %}
+        <div style="background-color: red; color:white; border-radius:20px;" class="alert-dismissible" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    <body class="body">
+        <h1 style="color:white;">SLAPTAŽODŽIO KEITIMAS</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <label for="password">NAUJAS SLAPTAŽODIS</label><br>
+            <input class="form" type="password" id="password" name="password" placeholder="NAUJAS SLAPTAŽODIS" required><br>
+            <label for="password">PAKARTOTI SLAPTAŽODĮ</label><br>
+            <input class="form" type="password" id="password-repeat" name="password-repeat" placeholder="PAKARTOTI SLAPTAŽODĮ" required><br>
+
+            <input class="btn" type="submit" value="KEISTI SLAPTAŽODĮ">
+        </form>
+    </body>
+{% else %}
+<h1>Nuoroda negaliojanti!</h1>
+<a class="hyperlink" href="{% url 'Index' %}"> Grizti i pagrindini puslapi </a>
+{% endif %}

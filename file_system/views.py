@@ -47,7 +47,8 @@ def Tool(request):
     except:
         image = None
         google = None
-    return render(request, 'analysis.html', {'form':form, 'image':image, 'google':google})
+    context = {'form':form, 'image':image, 'google':google}
+    return render(request, 'analysis.html', context)
 
 #@login_required
 def Extract_Exif(image):
@@ -68,17 +69,24 @@ def ToolQueries(request):
     except:
         image = None
         google = None
-    return render(request, 'queries-list.html', {'image': image, 'google': google})
+
+    context = {'image': image, 'google': google}
+    return render(request, 'queries-list.html', context)
 
 @login_required
-def ViewItem(request, image_id):
-    try: 
-        #image = ImageUploadModel.objects.filter(pk=image_id, user=request.user)
-        pass
-    except:
-        pass
-        #HttpResponse("Nepavyko:(")
-    #return redirect('Toolpage')
+def EditItem(request, image_id):
+    image = ImageUploadModel.objects.get(pk=image_id, user=request.user)
+    form = ImageUploadForm(instance=image)
+
+    if request.method == "POST":
+        form = ImageUploadForm(request.POST, instance=image)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Sėkmingai pakeisti duomenys')
+            return redirect('Toolqueries')
+    context={'form':form, 'image': image}
+        
+    return render(request,'query-edit.html', context)
 
 @login_required
 def DeleteItem(request, image_id):#, google_id):

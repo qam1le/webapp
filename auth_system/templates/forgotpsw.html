@@ -13,11 +13,12 @@
         <div class="sidenav">
             <a href="{% url 'Index' %}">Pagrindinis</a>
             <a href="{% url 'Login' %}">Prisijungti</a>
+            <a href="{% url 'Register' %}">Registruotis</a>
             <a href="#">Apie</a>
             <a href="#">Kontaktai</a>
         </div>
         
-        <h1 style="color:white;">REGISTRACIJA</h1>
+        <h1 style="color:white;">SLAPTAŽODŽIO KEITIMAS</h1>
         <div class="box">
             {% if messages %}
             {% for message in messages %}
@@ -26,32 +27,19 @@
                 </div>
             {% endfor %}
             {% endif %}
-            <form action="" method="POST">{% csrf_token %}
+            <form action="" method="POST">
+                {% csrf_token %}
 
                 <!-- INPUT FORMS -->
                 <label for="email">EL. PAŠTAS</label><br>
                 <input class="form" type="email" id="email" name="email" placeholder="EL. PAŠTAS" required><br>
-
-                <label for="username">PRISIJUNGIMO VARDAS</label><br>
-                <input class="form" type="text" id="username" name="username" placeholder="PRISIJUNGIMO VARDAS" required><br>
-                <label for="password">SLAPTAŽODIS</label><br>
-                <input class="form" type="password" id="password" name="password" placeholder="SLAPTAŽODIS" required><br>
-                <label for="password">PAKARTOTI SLAPTAŽODĮ</label><br>
-                <input class="form" type="password" id="password-repeat" name="password-repeat" placeholder="PAKARTOTI SLAPTAŽODĮ" required><br>
-
-                <!-- CHECKBOX -->
-                <input type="checkbox" id="remember_me" name="remember_me" value="Remember">
-                <label for="remember_me">Įsiminti</label>
                 
                 <br><br>
 
                 <!-- REGISTER SUBMIT BUTTON -->
-                <input class="btn" type="submit" value="REGISTRUOTIS">
+                <input class="btn" type="submit" value="SIŲSTI INSTRUKCIJAS">
 
                 <br><br>
-                <!-- SIGN IN -->
-                
-                <p>Turite paskyrą? <a class="hyperlink" href="{% url 'Login' %}"> PRISIJUNGTI </a></p>
             </form>
         </div>
     </body>

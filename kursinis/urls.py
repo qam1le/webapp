@@ -26,14 +26,16 @@ urlpatterns = [
     path('', authviews.Index, name="Index"),
     path('register/', authviews.Register, name='Register'),
     path('login/', authviews.Login, name='Login'),
+    path('activate/<uidb64>/<token>', authviews.Activate, name='Activate'),
 
     path('home/', authviews.Homepage, name='Homepage'),
     path('tool/', fileviews.Tool, name='Toolpage'),
-    #path('imgup/', fileviews.Image_Upload, name='Imgupload'),
     path('queries/', fileviews.ToolQueries, name='Toolqueries'),
-    #path('imgview/', fileviews.Image_Display, name='Imgdisplay'),
-    #path('images/<int:image_id>/', fileviews.ViewItem, name='Viewitem'),
+    path('edit/<int:image_id>/', fileviews.EditItem, name='Edititem'),
     path('images/delete/<int:image_id>/', fileviews.DeleteItem, name='Deleteitem'),
     path('logout/', authviews.Logout, name='Logout'),
+
+    path('reset_password', authviews.resetPassword, name='Resetpswd'),
+    path('reset/<uidb64>/<token>', authviews.confirmReset, name='Resetconfirm'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

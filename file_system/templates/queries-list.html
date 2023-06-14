@@ -23,6 +23,14 @@
 
     <br><br>
 
+    {% if messages %}
+    {% for message in messages %}
+        <div style="background-color: red; color:white; border-radius:20px;" class="alert-dismissible" role="alert">
+            {{ message }}
+            <br>
+        </div>
+    {% endfor %}
+    {% endif %}
     
     <div class="box">
         <h1>JŪSŲ UŽKLAUSŲ ISTORIJA</h1><br>
@@ -31,12 +39,24 @@
         {% for img in image %}
         <details>
             <summary class="summary">{{ img.image_name }}</summary>
-            <input style="width:20%;height:20%;" type="image" src="{{ img.image_file.url }}" href="{% url 'Toolpage' %}" alt="Perziureti faila" />
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Nuotrauka</td>
+                        <td>Užrašai</td>
+                    </tr>
+                    <tr>
+                        <td><input style="width:20%;height:20%;" type="image" src="{{ img.image_file.url }}" href="{% url 'Toolpage' %}" alt="Perziureti faila" /></td>
+                        <td><p>{{img.notes}}</p></td>
+                    </tr>
+                </tbody>
+            </table>
+            
             <table>
                 <tbody>
                     <tr>
                         <td>Pavadinimas pagal spėjimą</td>
-                        <td>Koordinates</td>
+                        <td>Koordinatės</td>
                         <td>Spėjimo patikimumas</td>
                     </tr>
                     
@@ -53,8 +73,10 @@
                     </tr>
                 </tbody>
             </table>
+            <br>
+            <button class="btn" type="submit" style="float:right;"><a style="color:white;" href="{% url 'Edititem' image_id=img.id %}">Koreguoti✏️</a></button>
             <button class="btn" type="submit" style="float:right;"><a style="color:white;" href="{% url 'Deleteitem' image_id=img.id %}">Pašalinti🗑️</a></button>
-            
+            <br>
         </details><br>
        
         {% empty %}
