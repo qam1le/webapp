@@ -3,22 +3,34 @@
     <head>
         <title>REGISTRACIJA</title>
         {% load static %}
-        <link rel="stylesheet" href="{% static 'style.css' %}">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
 
-    <body class="body">
-        <header class="header"> </header>
-        <!------------------MENIU------------------------->
-        <div class="sidenav">
-            <a href="{% url 'Index' %}">Pagrindinis</a>
-            <a href="{% url 'Login' %}">Prisijungti</a>
-            <a href="#">Apie</a>
-            <a href="#">Kontaktai</a>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'Index' %}">KamiWeb</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'Index' %}">Pagrindinis</a></li>
+            <li><a href="#">Apie</a></li>
+            <li><a href="#">Kontaktai</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href="{% url 'Register' %}"><span class="glyphicon glyphicon-user"></span> Registruotis</a></li>
+            <li><a href="{% url 'Login' %}"><span class="glyphicon glyphicon-log-in"></span> Prisijungti</a></li>
+          </ul>
         </div>
-        
-        <h1 style="color:white;">REGISTRACIJA</h1>
-        <div class="box">
+      </nav>
+
+
+          <div class="container mt-3">
+
             {% if messages %}
             {% for message in messages %}
                 <div style="background-color: red; color:white; border-radius:20px;" class="alert-dismissible" role="alert">
@@ -26,31 +38,43 @@
                 </div>
             {% endfor %}
             {% endif %}
-            <form action="" method="POST">{% csrf_token %}
 
-                <!-- INPUT FORMS -->
-                <label for="email">EL. PAŠTAS</label><br>
-                <input class="form" type="email" id="email" name="email" placeholder="EL. PAŠTAS" required><br>
+            <div class="container mt-3">
+                <h2>REGISTRACIJA</h2>
+                <br>
+                <form action="" method="POST">
+                {% csrf_token %}
+                  <div class="mb-3 mt-3">
+                    <label for="email">Įveskite el. paštą:</label>
+                    <input type="email" class="form-control" id="email" placeholder="EL. PAŠTAS" name="email" required>
+                  </div>
+                  <br>
+                  <div class="mb-3 mt-3">
+                    <label for="username">Įveskite prisijungimo vardą:</label>
+                    <input type="text" class="form-control" id="username" placeholder="PRISIJUNGIMO VARDAS" name="username" required>
+                  </div>
+                  <br>
+                  <div class="mb-3">
+                    <label for="password">Įveskite slaptažodį:</label>
+                    <input type="password" class="form-control" id="password" placeholder="SLAPTAŽODIS" name="password" required>
+                  </div>
+                  <div id="passwordHelpBlock" class="form-text">
+                    Slaptažodis privalo būti bent 8 simbolių ilgio, sudarytas iš bent vieno specialiojo simbolio ir skaičiaus
+                  </div>
+                  <br>
+                  <div class="mb-3">
+                    <label for="password">Pakartokite slaptažodį:</label>
+                    <input type="password" class="form-control" id="password-repeat" placeholder="PAKARTOTI SLAPTAŽODĮ" name="password-repeat" required>
+                  </div>
+                  <br>
 
-                <label for="username">PRISIJUNGIMO VARDAS</label><br>
-                <input class="form" type="text" id="username" name="username" placeholder="PRISIJUNGIMO VARDAS" required><br>
-                <label for="password">SLAPTAŽODIS</label><br>
-                <input class="form" type="password" id="password" name="password" placeholder="SLAPTAŽODIS" required><br>
-                <label for="password">PAKARTOTI SLAPTAŽODĮ</label><br>
-                <input class="form" type="password" id="password-repeat" name="password-repeat" placeholder="PAKARTOTI SLAPTAŽODĮ" required><br>
-
-                <!-- CHECKBOX -->
-                <input type="checkbox" id="remember_me" name="remember_me" value="Remember">
-                <label for="remember_me">Įsiminti</label>
-                
-                <br><br>
-
-                <!-- REGISTER SUBMIT BUTTON -->
-                <input class="btn" type="submit" value="REGISTRUOTIS">
+                  <br>
+                  <button type="submit" class="btn btn-primary">REGISTRUOTIS</button>
+                </form>
+              </div>
 
                 <br><br>
                 <!-- SIGN IN -->
-                
                 <p>Turite paskyrą? <a class="hyperlink" href="{% url 'Login' %}"> PRISIJUNGTI </a></p>
             </form>
         </div>

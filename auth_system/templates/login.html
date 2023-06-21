@@ -1,25 +1,36 @@
 <!DOCTYPE html>
 <head>
-    <title>PAGRINDINIS</title>
+    <title>PRISIJUNGIMAS</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 
-<body class = "body">
-    <header class="header"> </header>
-<!------------------MENIU------------------------->
-    <div class="sidenav">
-        <a href="{% url 'Index' %}">Pagrindinis</a>
-        <a href="{% url 'Register' %}">Registruotis</a>
-        <a href="#">Apie</a>
-        <a href="#">Kontaktai</a>
-    </div>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'Index' %}">KamiWeb</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'Index' %}">Pagrindinis</a></li>
+            <li><a href="#">Apie</a></li>
+            <li><a href="#">Kontaktai</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'Register' %}"><span class="glyphicon glyphicon-user"></span> Registruotis</a></li>
+            <li class="active"><a href="{% url 'Login' %}"><span class="glyphicon glyphicon-log-in"></span> Prisijungti</a></li>
+          </ul>
+        </div>
+      </nav>
 <!------------------PRISIJUNGIMO FORMA------------------------->
     <br>
-    <div class="box">
-        <h1>SVEIKI</h1>
-        <form action="" method="POST">{% csrf_token %}
+    <div>
+        <form action="" method="POST">
+            {% csrf_token %}
             {% if messages %}
             {% for message in messages %}
                 <div style="background-color: red; color:white; border-radius:20px;" class="alert-dismissible" role="alert">
@@ -29,20 +40,27 @@
             {% endif %}
             
             
-            <!-- INPUT FORMS -->
-            <label style="float:inherit;" for="username">Įveskite prisijungimo vardą</label><br>
-            <input class="form" type="text" id="username" name="username" placeholder="PRISIJUNGIMO VARDAS" required><br>
-            <br>
-            <label for="password">Įveskite slaptažodį</label><br>
-            <input class="form" type="password" id="password" name="password" placeholder="SLAPTAŽODIS" required><br>
-            <!-- CHECKBOX -->
-            <input type="checkbox" id="remember_me" name="remember_me" value="Remember">
-            <label for="remember_me">Įsiminti</label>
-            
-            <br><br>
+            <div class="container mt-3">
+                <h2>PRISIJUNGIMAS</h2>
+                <br>
+                <form action="" method="POST">
+                {% csrf_token %}
+                  <div class="mb-3 mt-3">
 
-            <!-- SUBMIT BUTTON -->
-            <input class="btn" type="submit" value="PRISIJUNGTI">
+                  <div class="mb-3 mt-3">
+                    <label for="username">Įveskite prisijungimo vardą:</label>
+                    <input type="text" class="form-control" id="username" placeholder="PRISIJUNGIMO VARDAS" name="username" required>        
+                  </div>
+                  <br>
+                  <div class="mb-3">
+                    <label for="password">Įveskite slaptažodį:</label>
+                    <input type="password" class="form-control" id="password" placeholder="SLAPTAŽODIS" name="password" required>
+                  </div>
+            
+                  <br>
+                  <button type="submit" class="btn btn-primary">PRISIJUNGTI</button>
+                </form>
+              </div>
         <br>
 <!------------------NUORODA I REGISTRACIJA------------------------->
         <p><b>Lankotės pirmą kartą?</b><br><br> <a href="{% url 'Register' %}" class="hyperlink">REGISTRUOKITĖS</a></p>

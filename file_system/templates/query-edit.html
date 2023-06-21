@@ -1,44 +1,63 @@
 {% if user.is_authenticated %}
 <!DOCTYPE html>
 <head>
-    <title>UZKLAUSU ISTORIJA</title>
+    <title>KOREGAVIMAS</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body class="body">
-    <header class="header"></header>
-    <!------------------MENIU------------------------->
-    <div class="sidenav">
-        <p class="greeting">Sveiki {{request.user.username}}</p>
-        <a href="{% url 'Homepage' %}">Pagrindinis</a>
-        <a href="{% url 'Toolpage' %}">Įrankis</a>
-        <a href="{% url 'Toolqueries' %}">Užklausos</a>
-        <a href="#">Apie</a>
-        <a href="#">Kontaktai</a>
-        <button class="logout"><a href="{% url 'Logout' %}">ATSIJUNGTI</a></button>
-    </div>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'Homepage' %}">KamiWeb</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'Homepage' %}">Pagrindinis</a></li>
+            <li><a href="{% url 'Toolpage' %}">Įrankis</a></li>
+            <li><a href="{% url 'Toolqueries' %}">Užklausos</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'Logout' %}"><span class="glyphicon glyphicon-user"></span> Atsijungti</a></li>
+          </ul>
+        </div>
+      </nav>
 
     <br><br>
 
     {% if image %}
-    <div class = "box" style="height:50%; width:50%; margin:auto;">
-        <img class = "image" src="{{ image.image_file.url }}">
-    </div>
 
-    <form class="box" method="POST" enctype="multipart/form-data">
+    <div class="container">
+
+        <div class="jumbotron">
+          <div class="row">
+              <div class="col-sm-4">
+                  <h3>
+                      <img src="{{ image.image_file.url }}" height="100%" width="100%">
+                  </h3>
+              </div>
+              <div class="col-sm-4">
+    <form class="form-group" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <p>Failo pavadinimas</p>
         {{ form.image_name }}
         <p>Failo užrašai</p>
         {{    form.notes   }}
         <br>
-        <input class="btn" type="submit" value="Išsaugoti">
-        <br><br>
-        <button class="btn" type="submit" style="float:right;"><a style="color:white;" href="{% url 'Toolqueries' %}">Atšaukti</a></button>
+        <input class="btn btn-success" type="submit" value="Išsaugoti">
+        <button class="btn btn-danger" type="submit" style="float:right;"><a style="color:white;" href="{% url 'Toolqueries' %}">Atšaukti</a></button>
         <br>
     </form>
+</div>
+
+      </div>
+
+
 
     {%endif%}
 

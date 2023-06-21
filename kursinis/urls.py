@@ -35,7 +35,7 @@ urlpatterns = [
     path('images/delete/<int:image_id>/', fileviews.DeleteItem, name='Deleteitem'),
     path('logout/', authviews.Logout, name='Logout'),
 
-    path('reset_password', authviews.resetPassword, name='Resetpswd'),
-    path('reset/<uidb64>/<token>', authviews.confirmReset, name='Resetconfirm'),
+    #path('reset_password', authviews.resetPassword, name='Resetpswd'),
+    #path('reset/<uidb64>/<token>', authviews.confirmReset, name='Resetconfirm'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

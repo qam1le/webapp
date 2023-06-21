@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import *
 from .models import *
 from django.contrib import messages
+from pathlib import Path
 
 from GPSPhoto import gpsphoto
 from google.cloud import vision
@@ -20,7 +21,7 @@ def Tool(request):
             image = form.save(commit=False)
             image.user = request.user
             filesize = image.image_file.size
-            
+
             if filesize < 5242880:
                 image.save()
             else:
@@ -85,7 +86,7 @@ def EditItem(request, image_id):
             messages.success(request,'Sėkmingai pakeisti duomenys')
             return redirect('Toolqueries')
     context={'form':form, 'image': image}
-        
+
     return render(request,'query-edit.html', context)
 
 @login_required
@@ -104,8 +105,10 @@ def DeleteItem(request, image_id):#, google_id):
 def Generate_Landmark_Info(image_file):
     desc, lat, long, score = "", 0, 0, 0
 
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'GoogleAPI.json'
+
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'/home/sudokewl/webapp/GoogleAPI.json'
     client = vision.ImageAnnotatorClient()
+
 
     with io.open(image_file, "rb") as file:
         content = file.read()
@@ -121,12 +124,12 @@ def Generate_Landmark_Info(image_file):
 def Get_Landmarks(response: vision.AnnotateImageResponse, min_score: float = 0.5):
     lat, long, score, max_score = 0, 0, 0, None
     desc = ""
-    
+
     try:
         for landmark in response.landmark_annotations:
             if landmark.score < min_score:
                 continue
-            
+
             if isinstance(landmark.score, float):
                 if max_score is None or landmark.score > max_score:
                     max_score = landmark.score

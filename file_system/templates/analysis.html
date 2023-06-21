@@ -1,115 +1,153 @@
 {% if user.is_authenticated %}
-<!--NUOTRAUKU IKELIMAS ANALIZEI-->
 <!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>NUOTRAUKU ANALIZE</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANALIZĖ</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-
-<body class = "body">
-    <header class="header"> </header>
-<!------------------MENIU------------------------->
-    <div class="sidenav">
-        <p class="greeting">Sveiki {{request.user.username}}</p>
-        
-        <a href="{% url 'Homepage' %}">Pagrindinis</a>
-        <a href="{% url 'Toolpage' %}">Įrankis</a>
-        <a href="{% url 'Toolqueries' %}">Užklausos</a>
-        <a href="#">Apie</a>
-        <a href="#">Kontaktai</a>
-        
-        <button class="logout"><a href="{% url 'Logout' %}">ATSIJUNGTI</a></button>
+<body>
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{% url 'Homepage' %}">KamiWeb</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li><a href="{% url 'Homepage' %}">Pagrindinis</a></li>
+        <li class="active"><a href="{% url 'Toolpage' %}">Įrankis</a></li>
+        <li><a href="{% url 'Toolqueries' %}">Užklausos</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{% url 'Logout' %}"><span class="glyphicon glyphicon-user"></span> Atsijungti</a></li>
+      </ul>
     </div>
+  </nav>
 
-    <br>
-    {% if image %}
-    <p style="color:white; font-weight: bolder; margin-left: 150px;">↓↓↓Naujausiai įkeltas failas↓↓↓</p>
-    {%endif%}
-    <div class = "box-analysis">
-    {% if image %}
-        <img class = "image" src="{{ image.image_file.url }}">    
-    {% if google.latitude %}
-        <iframe class="queryres" width="720" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" 
-        src="https://maps.google.com/maps?q={{google.latitude}},{{google.longitude}}&hl=es;z=14&amp;output=embed">
-        <a href="https://www.maps.ie/distance-area-calculator.html">measure area map</a></iframe>
-    {% elif not google.latitude and image.lat  %}
-        <iframe class="queryres" width="720" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" 
-        src="https://maps.google.com/maps?q={{image.lat}},{{image.lon}}&hl=es;z=14&amp;output=embed">
-        <a href="https://www.maps.ie/distance-area-calculator.html">measure area map</a></iframe>
-    {% else %}
-    <p>Nepavyko rasti koordinaciu</p>
-    {% endif %}
-    {% else %}
-        <p class="image">Ką nors įkelkite :)</p>
-    {% endif %}
-    </div>
+  {% if messages %}
+  {% for message in messages %}
+      <div style="background-color: red; color:white; border-radius:20px;" class="alert-dismissible" role="alert">
+          {{ message }}
+          <br>
+      </div>
+  {% endfor %}
+  {% endif %}
 
-    <br>
-    {% if messages %}
-    {% for message in messages %}
-        <div style="background-color: red; color:white; border-radius:20px;" class="alert-dismissible" role="alert">
-            {{ message }}
-            <br>
+<div class="container">
+  {% if image %}
+  <p style="color:white; font-weight: bolder; margin-left: 150px;">↓↓↓Naujausiai įkeltas failas↓↓↓</p>
+  {%endif%}
+
+      <div class="jumbotron">
+      <div class="row">
+      <div class="col-md-4">
+      {% if image %}
+      <img src="{{ image.image_file.url }}" height="240" width="240">
+      </div>
+
+      {% if google.latitude %}
+      <div class="col-sm-4">
+        <div data-component-maps="" style="min-height: 240px; min-width: 240px; position: relative; line-height: 24px; height: 127px; width: 300px;">
+          <iframe frameborder="0" src="https://maps.google.com/maps?q={{google.latitude}},{{google.longitude}}&hl=es;z=14&amp;output=embed" width="100" height="100" style="width:100%;height:100%;position:absolute;left:0px;pointer-events:none"></iframe></div></div></div><div class="container" style=""><div class="container" style="">
+          </div>
         </div>
-    {% endfor %}
-    {% endif %}
-    <form class="box" method="POST" enctype="multipart/form-data">{% csrf_token %}
-        {{ form.as_p }}
-        <input class="btn" type="submit" value="Įkelti">
-      </form>
-    
-    <br><br>
-        {% if image %}
-    <div class = "box-analysis">
-        <p>EXIF INFORMACIJA: </p>
-        <table>
-            <tbody>
-                <tr>
-                    <td>Failo pavadinimas&nbsp;</td>
-                    <td>Koordinatės&nbsp;</td>
-                </tr>
+      {% elif not google.latitude and image.lat  %}
+      <div class="col-sm-4">
+        <div data-component-maps="" style="min-height: 240px; min-width: 240px; position: relative; line-height: 24px; height: 127px; width: 300px;">
+          <iframe frameborder="0" src="https://maps.google.com/maps?q={{image.lat}},{{image.lon}}&hl=es;z=14&amp;output=embed" width="100" height="100" style="width:100%;height:100%;position:absolute;left:0px;pointer-events:none"></iframe></div></div></div><div class="container" style=""><div class="container" style="">
+          </div>
+      </div>
+      {%else%}
+        <p>Nepavyko rasti koordinačių</p>
+      {% endif %}
+      {% else %}
+      <p>Ką nors įkelkite :)</p>
+      {%endif%}
+      <br>
+        <a class="btn btn-primary" href="#" target="_blank" data-toggle="modal" data-target="#myModal">ĮKELTI</a>
+      <br>
+      {% if image %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Failo pavadinimas</th>
+            <th>Koordinatės</th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>EXIF INFORMACIJA:</td>
+            <td>{{ image.image_name }}</td>
+            {% if image.lat %}
+            <td>{{ image.lat }}, {{ image.lon }}</td>
+            {%else%}
+            <td>GPS info nerasta</td>
+            {%endif%}
+            <td></td>
+          </tr>
+        </tbody>
+        {%endif%}
+      </table>
 
-                <tr>
-                    <td>{{ image.image_name }}&nbsp;</td>
-                {% if image.lat %}
-                    <td>{{ image.lat }}, {{ image.lon }}&nbsp;</td>
-                {% else %}
-                    <td>GPS info nerasta&nbsp;</td>
-                {%endif%}
-                </tr>
-            </tbody>
-            {% endif %}
-        </table>
+      {% if google %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Objekto pavadinimas</th>
+            <th>Koordinatės</th>
+            <th>Spėjimo patikimumas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {% if google.description %}
+            <td>SUGENERUOTI DUOMENYS:</td>
+            <td>{{ google.description }}</td>
+            <td>{{ google.latitude }}, {{ google.longitude }}</td>
+            <td>{{ google.score }}%</td>
+            {%else%}
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            {%endif%}
+          </tr>
+        </tbody>
+      </table>
+      {%endif%}
     </div>
 
-    <br>
-        {% if google %}
-    <div class = "box-analysis">
-        <p>SUGENERUOTI DUOMENYS:</p>
-        <table>
-            <tbody>
-                <tr>
-                    <td>Objekto pavadinimas&nbsp;</td>
-                    <td>Koordinatės&nbsp;</td>
-                    <td>Spėjimo patikimumas&nbsp;</td>
-                </tr>
 
-                <tr>
-                    {% if google.description %}
-                    <td>{{ google.description }}&nbsp;</td>
-                    <td>{{ google.latitude }}, {{ google.longitude }}&nbsp;</td>
-                    <td>{{ google.score }}%&nbsp;</td>
-                    {% else %}
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    {%endif%}
-                </tr>
-            </tbody>
-        </table>
-        {% endif %}
-    </div>
+        <!-- Modal -->
+       <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Nuotraukos įkėlimas</h4>
+            </div>
+            <div class="modal-body">
+              <div class="btn-group">
+                  <form class="form-group" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input class="btn btn-primary" type="submit" value="Įkelti">
+                  </form>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Uždaryti</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
 </body>
-{% endif %}
+</html>
+{%endif%}

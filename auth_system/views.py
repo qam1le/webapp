@@ -20,19 +20,21 @@ from .forms import *
 ALLOWED_EMAILS = ['gmail.com', 'yahoo.com', 'outlook.com', 'proton.me', 'icloud.com']
 
 def Index(request):
+    if request.user.is_authenticated:
+        return redirect('Homepage')
     return render(request, 'index.html', {})
 
 def Register(request):
     if request.user.is_authenticated:
         return redirect('Homepage')
-    
+
     if request.method == 'POST':
         mail = request.POST.get('email')
-        
+
         if not any(mail.endswith(emails) for emails in ALLOWED_EMAILS):
             messages.error(request, "Klaida. Netinkamas el pasto domenas, naudokite @gmail.com arba panašias alternatyvas")
             return redirect('Register')
-        
+
         uname = request.POST.get('username')
         psw = request.POST.get('password')
         psw_r = request.POST.get('password-repeat')
@@ -57,7 +59,7 @@ def Register(request):
             else:
                 messages.error(request, 'Nevienodi slaptazodziai')
                 return redirect('Register')
-    
+
     return render(request, 'register.html', {})
 
 def activateEmail(request, user, to_email):
@@ -92,7 +94,7 @@ def Activate(request, uidb64, token):
         return redirect('Login')
     else:
         messages.error(request, 'Nuoroda nera veikianti!')
-    
+
     return redirect('Homepage')
 
 
@@ -100,7 +102,7 @@ def Activate(request, uidb64, token):
 def Login(request):
     if request.user.is_authenticated:
         return redirect('Homepage')
-    
+
     if request.method == 'POST':
         name = request.POST.get('username')
         psw = request.POST.get('password')
