@@ -89,23 +89,27 @@
                         <th>Spėjimo patikimumas</th>
                       </tr>
                     </thead>
+                    {% for goo in google %}
                     <tbody>
                       <tr>
-                        {% if google.description  %}
-                        <td>{{ google.description }}</td>
-                        <td>{{ google.latitude }} , {{ google.longitude }}</td>
-                        <td>{{ google.score }}%</td>
-                        {% elif img.lat %}
-                        <td>-</td>
-                        <td>{{ img.lat }} , {{ img.lon }}</td>
-                        <td>-</td>
+                        {% if goo is not None and goo != 0 %}
+
+                          <td>{{ goo.description }}</td>
+                          <td>{{ goo.latitude }} , {{ goo.longitude }}</td>
+                          <td>{{ goo.score }}%</td>
+
+                        {% elif goo is None and goo == 0 and img.lat != 0 %}
+                          <td>-</td>
+                          <td>{{ img.lat }} , {{ img.lon }}</td>
+                          <td>-</td>
                         {% else %}
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>-</td>
                         {%endif%}
                       </tr>
                     </tbody>
+                    {%endfor%}
                   </table>
               <div class="btn-group">
                 <button type="submit" class="btn btn-danger"><a href="{% url 'Deleteitem' image_id=img.id %}" style="color:white; text-decoration: none;">Pašalinti</a></button>

@@ -13,6 +13,7 @@ class ImageUploadModel (models.Model):
 
 class GoogleVisionModel (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True )
+    #image = models.OneToOneField(ImageUploadModel, on_delete=models.CASCADE, null=True)
     description = models.CharField(max_length=50, null=True)
     latitude = models.CharField(max_length=50, null=True)
     longitude = models.CharField(max_length=50, null=True)

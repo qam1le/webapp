@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS =  ['sudokewl.pythonanywhere.com']
+ALLOWED_HOSTS =  config('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': config('NAME'),
         'USER': 'sudokewl',
         'PASSWORD': config('PASSWORD'),
-        'HOST': 'sudokewl.mysql.pythonanywhere-services.com',#os.getenv('HOST'),
+        'HOST': config('DB_HOST'),
         'PORT': '3306',
     }
 }
@@ -141,7 +141,7 @@ LOGIN_URL = 'Login'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CSRF_TRUSTED_ORIGINS = ['https://sudokewl.pythonanywhere.com']
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS')
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True

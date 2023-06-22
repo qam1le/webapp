@@ -6,11 +6,13 @@ from .forms import *
 from .models import *
 from django.contrib import messages
 from pathlib import Path
+from django.views.decorators.csrf import csrf_protect
 
 from GPSPhoto import gpsphoto
 from google.cloud import vision
 import os, io
 
+@csrf_protect
 @login_required
 def Tool(request):
     if request.method == 'POST':
@@ -34,6 +36,7 @@ def Tool(request):
 
             gDescription, gLat, gLon, gScore = Generate_Landmark_Info(image.image_file.path)
             gScore = int(gScore*100)
+            #img_id = image.id
             google = GoogleVisionModel(description=gDescription, latitude=gLat, longitude=gLon, score=gScore)
             google.user = request.user
             google.save()
@@ -74,6 +77,7 @@ def ToolQueries(request):
     context = {'image': image, 'google': google}
     return render(request, 'queries-list.html', context)
 
+@csrf_protect
 @login_required
 def EditItem(request, image_id):
     image = ImageUploadModel.objects.get(pk=image_id, user=request.user)

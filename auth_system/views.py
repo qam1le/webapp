@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.password_validation import *
 from django.core.exceptions import ValidationError
+from django.views.decorators.csrf import csrf_protect
 
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
@@ -24,6 +25,7 @@ def Index(request):
         return redirect('Homepage')
     return render(request, 'index.html', {})
 
+@csrf_protect
 def Register(request):
     if request.user.is_authenticated:
         return redirect('Homepage')
@@ -62,6 +64,7 @@ def Register(request):
 
     return render(request, 'register.html', {})
 
+@csrf_protect
 def activateEmail(request, user, to_email):
     mail_subject = 'Paskyros aktyvavimas.'
     message = render_to_string('activation.html', {
@@ -77,7 +80,7 @@ def activateEmail(request, user, to_email):
     else:
         messages.error(request, 'Problemos su patvirtinimo laisko issiuntimo, patikrinkite ar suvedete duomenis teisingai')
 
-
+@csrf_protect
 def Activate(request, uidb64, token):
     User = get_user_model()
     try:
@@ -98,7 +101,7 @@ def Activate(request, uidb64, token):
     return redirect('Homepage')
 
 
-
+@csrf_protect
 def Login(request):
     if request.user.is_authenticated:
         return redirect('Homepage')
@@ -116,10 +119,11 @@ def Login(request):
             return redirect('Login')
     return render(request, 'login.html', {})
 
+@csrf_protect
 @login_required
 def Homepage(request):
     return render(request, 'homepage.html', {})
-
+@csrf_protect
 @login_required
 def Logout(request):
     logout(request)
