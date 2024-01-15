@@ -8,6 +8,13 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""/> <!--LEAFLET-->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""></script>
 </head>
 <body>
   <nav class="navbar navbar-inverse">
@@ -19,6 +26,8 @@
         <li><a href="{% url 'Homepage' %}">Pagrindinis</a></li>
         <li class="active"><a href="{% url 'Toolpage' %}">Įrankis</a></li>
         <li><a href="{% url 'Toolqueries' %}">Užklausos</a></li>
+        <li><a href="{% url 'Mapcreate' %}">Žemėlapio kūrimas</a></li>
+        <li><a href="{% url 'Mapview' %}">Žemėlapiai</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="{% url 'Logout' %}"><span class="glyphicon glyphicon-user"></span> Atsijungti</a></li>
@@ -50,14 +59,16 @@
       {% if google.latitude %}
       <div class="col-sm-4">
         <div data-component-maps="" style="min-height: 240px; min-width: 240px; position: relative; line-height: 24px; height: 127px; width: 300px;">
-          <iframe frameborder="0" src="https://maps.google.com/maps?q={{google.latitude}},{{google.longitude}}&hl=es;z=14&amp;output=embed" width="100" height="100" style="width:100%;height:100%;position:absolute;left:0px;pointer-events:none"></iframe></div></div></div><div class="container" style=""><div class="container" style="">
+          <div id="map" width="100" height="100" style="width:100%;height:100%;position:absolute;left:0px;">
           </div>
         </div>
+      </div>
       {% elif not google.latitude and image.lat  %}
       <div class="col-sm-4">
         <div data-component-maps="" style="min-height: 240px; min-width: 240px; position: relative; line-height: 24px; height: 127px; width: 300px;">
-          <iframe frameborder="0" src="https://maps.google.com/maps?q={{image.lat}},{{image.lon}}&hl=es;z=14&amp;output=embed" width="100" height="100" style="width:100%;height:100%;position:absolute;left:0px;pointer-events:none"></iframe></div></div></div><div class="container" style=""><div class="container" style="">
+          <div id="map" width="100" height="100" style="width:100%;height:100%;position:absolute;left:0px;">
           </div>
+      </div>
       </div>
       {%else%}
         <p>Nepavyko rasti koordinačių</p>
@@ -67,6 +78,7 @@
       {%endif%}
       <br>
         <a class="btn btn-primary" href="#" target="_blank" data-toggle="modal" data-target="#myModal">ĮKELTI</a>
+      <br>
       <br>
       {% if image %}
       <table class="table">
@@ -119,6 +131,7 @@
         </tbody>
       </table>
       {%endif%}
+      <footer class="text-center p-4">©qam1le, 2023<br>qam1le@mail.lt</footer>
     </div>
 
 
@@ -146,8 +159,24 @@
           </div>
 
         </div>
+        
       </div>
-
-</body>
+      
+      
+      <script>
+          var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+          {% if google %}
+          var map = L.map('map').setView([{{ google.latitude }}, {{ google.longitude }}], 15);
+          L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          }).addTo(map);
+          
+          var featureGroup = L.featureGroup().addTo(map);
+          var marker = L.marker([{{ google.latitude }}, {{ google.longitude }}]).addTo(featureGroup);
+          {% endif %}
+      </script>
+{{ redirect_to_login_immediately }}
+    </body>
 </html>
 {%endif%}

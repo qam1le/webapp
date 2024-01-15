@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.password_validation import *
 from django.core.exceptions import ValidationError
-from django.views.decorators.csrf import csrf_protect
 
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
@@ -21,22 +20,19 @@ from .forms import *
 ALLOWED_EMAILS = ['gmail.com', 'yahoo.com', 'outlook.com', 'proton.me', 'icloud.com']
 
 def Index(request):
-    if request.user.is_authenticated:
-        return redirect('Homepage')
     return render(request, 'index.html', {})
 
-@csrf_protect
 def Register(request):
-    if request.user.is_authenticated:
-        return redirect('Homepage')
-
+    #if request.user.is_authenticated:
+    #    return redirect('Homepage')
+    
     if request.method == 'POST':
         mail = request.POST.get('email')
-
+        
         if not any(mail.endswith(emails) for emails in ALLOWED_EMAILS):
             messages.error(request, "Klaida. Netinkamas el pasto domenas, naudokite @gmail.com arba panašias alternatyvas")
             return redirect('Register')
-
+        
         uname = request.POST.get('username')
         psw = request.POST.get('password')
         psw_r = request.POST.get('password-repeat')
@@ -61,10 +57,9 @@ def Register(request):
             else:
                 messages.error(request, 'Nevienodi slaptazodziai')
                 return redirect('Register')
-
+    
     return render(request, 'register.html', {})
 
-@csrf_protect
 def activateEmail(request, user, to_email):
     mail_subject = 'Paskyros aktyvavimas.'
     message = render_to_string('activation.html', {
@@ -80,7 +75,58 @@ def activateEmail(request, user, to_email):
     else:
         messages.error(request, 'Problemos su patvirtinimo laisko issiuntimo, patikrinkite ar suvedete duomenis teisingai')
 
-@csrf_protect
+def ChangePassword(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user = request.POST.get('username')
+        resetPassword(request,user,email)
+
+def resetPassword(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            mail = form.cleaned_data['email']
+            user = get_user_model().objects.filter(Q(email=mail)).first()
+            if user:
+                mail_subject = 'Slaptažodžio keitimas.'
+                message = render_to_string('resetpswemail.html', {
+                'user': user,
+                'domain': get_current_site(request).domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+                'protocol': 'https' if request.is_secure() else 'http'        
+            })
+            email = EmailMessage(mail_subject, message, to=[user.email])  
+            if email.send():
+                messages.success(request, 'Instrukcijos nusiųstos, nurodytu el paštu')
+            else:
+                messages.error(request, 'Nepavyko išsiųsti instrukcijų nurodytu el. paštu, ar teisingai suvedėte duomenis?')
+        return redirect('Login')
+    return render(request, 'forgotpsw.html', {})
+
+def confirmReset(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except:
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        if request.method == 'POST':
+            psw = request.POST.get('password')
+            psw_r = request.POST.get('password-repeat')
+            if psw == psw_r:
+                user.save()
+                messages.success(request, 'Sekmingai pakeistas slaptazodis')
+                return redirect('Login')
+        return render(request, 'psweditconfirm.html')
+    else:
+        messages.error(request, 'Nuoroda nera veikianti!')
+    
+    return redirect('Login')
+
+
 def Activate(request, uidb64, token):
     User = get_user_model()
     try:
@@ -97,15 +143,15 @@ def Activate(request, uidb64, token):
         return redirect('Login')
     else:
         messages.error(request, 'Nuoroda nera veikianti!')
-
+    
     return redirect('Homepage')
 
 
-@csrf_protect
+
 def Login(request):
     if request.user.is_authenticated:
         return redirect('Homepage')
-
+    
     if request.method == 'POST':
         name = request.POST.get('username')
         psw = request.POST.get('password')
@@ -119,11 +165,10 @@ def Login(request):
             return redirect('Login')
     return render(request, 'login.html', {})
 
-@csrf_protect
 @login_required
 def Homepage(request):
     return render(request, 'homepage.html', {})
-@csrf_protect
+
 @login_required
 def Logout(request):
     logout(request)

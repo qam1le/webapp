@@ -1,0 +1,301 @@
+{% if user.is_authenticated %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <title>MapEdit</title>
+  <meta name="generator" content="GrapesJS Studio">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index,follow">
+  <link rel="stylesheet" href="{% static 'grapejs.css' %}">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
+  <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+  {% csrf_token %}
+</head>
+
+<body id="ix7o4f">
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{% url 'Homepage' %}">KamiWeb</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li><a href="{% url 'Homepage' %}">Pagrindinis</a></li>
+        <li><a href="{% url 'Toolpage' %}">Įrankis</a></li>
+        <li><a href="{% url 'Toolqueries' %}">Užklausos</a></li>
+        <li class="active"><a href="{% url 'Mapcreate' %}">Žemėlapio kūrimas</a></li>
+        <li><a href="{% url 'Mapview' %}">Žemėlapiai</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{% url 'Logout' %}"><span class="glyphicon glyphicon-user"></span> Atsijungti</a></li>
+      </ul>
+    </div>
+  </nav>
+
+
+  
+  <section class="gjs-section" id="iersem">
+    <div class="gjs-container">
+      {% if messages %}
+      {% for message in messages %}
+          <div class="message text-center alert alert-info {{message.tags}}">
+              {{ message }}
+          </div>
+      {% endfor %}
+      {% endif %}
+      <div class="gjs-grid-row" id="ip95gd">
+        <div class="gjs-grid-column" id="map" style="height: 600px; width: 900px;">
+        </div>
+        <div class="gjs-grid-column" id="i1cm14">
+          <div>
+            <form class="modal-body">
+              <input id="irojly" placeholder="Pavadinimas">
+              <br>
+              <input id="i46j52" placeholder="Aprašymas">
+            </form>
+          </div>
+          <div class="gjs-grid-row" id="i2la7k">
+            <div class="gjs-grid-column" id="iswvx5">
+              <input class="gjs-button" id="im449i" type="submit" value="SAUGOTI" onclick="saveWaypoints()">
+              <input class="gjs-button" id="ipx0x1" type="button" value="ATŠAUKTI" onclick="location.href='{% url 'Mapview' %}'">
+            </div>
+          </div>
+          
+            {% if not image or not google %}
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Ką nors <a href="{% url 'Toolpage' %}">įkelkite</a> Įrankis puslapyje</h4>
+            </div>
+            <div class="modal-body">
+              <p>Arba įkelkite naują failą redaguojant žemėlapį</p>
+            </div>
+            </div></div>
+            {%endif%}
+
+            <div class="modal-dialog modal-dialog-scrollable">
+              <div class="modal-content">
+
+            <div class="modal-header">
+              <h4 class="modal-title">Vietovių sąrašas</h4>
+            </div>
+            <div class="modal-body">
+              {%for img in image%}
+              <table class="table table-hover" id="filesdata_table">
+                <thead>
+                  <tr>
+                    <th>Nuotrauka</th>
+                    <th>Pavadinimas</th>
+                    <th>Koordinatės</th>
+                    <th>Spėjimo patikimumas</th>
+                  </tr>
+                </thead>
+                {% for goo in google %}
+                <tbody>
+                  {% if goo.description != "" and goo.image_id == img.id%}
+                  <tr onclick="coordImageUpload(this)" image="{{img.image_file}}" title="{{goo.description}}" description="{{img.notes}}" latitude="{{goo.latitude}}" longitude="{{goo.longitude}}">
+                    <td><img src="{{img.image_file.url}}" style="height: 48px; width: 48px;"></td>
+                    <td>{{ goo.description }}</td>
+                    <td>{{ goo.latitude }} , {{ goo.longitude }}</td>
+                    <td>{{ goo.score }}%</td>
+                  </tbody>
+                  {%endif%}
+                  {%endfor%}
+                  {% if not google.latitude and img.lat != 0.000000000000000 %}
+                  <tbody>
+                    <tr onclick="coordImageUpload(this)" image="{{img.image_file.url}}" title="{{img.image_name}}" description="{{img.notes}}" latitude="{{img.lat}}" longitude="{{img.lon}}">
+                    <td><img src="{{img.image_file.url}}" style="height: 48px; width: 48px;"></td>
+                    <td>{{img.image_name}}</td>
+                    <td>{{ img.lat }} , {{ img.lon }}</td>
+                    <td>-</td>
+                    {% else %}
+
+                    {%endif%}
+                  </tr>
+                </tbody>
+                
+              </table>
+              {%endfor%}
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <div class="modal fade" id="waypointModal" tabindex="-1" role="dialog" aria-labelledby="waypointModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="waypointModalLabel">Pridėti žymę</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="waypointForm">
+                  <div class="form-group">
+                    <label for="titleInput">Pavadinimas:</label>
+                    <input type="text" class="form-control" id="titleInput" placeholder="Įveskite pavadinimą">
+                  </div>
+                  <div class="form-group">
+                    <label for="descriptionInput">Aprašas:</label>
+                    <textarea class="form-control" id="descriptionInput" rows="3" placeholder="Įveskite aprašą"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="imageInput">Įkelkite nuotrauką</label>
+                    <input type="file" class="form-control-file" id="imageInput">
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Atšaukti</button>
+                <button type="button" class="btn btn-primary" onclick="saveDataModal()">Išsaugoti</button>
+              </div>
+            </div>
+          </div>
+        </div>
+  </section>
+  <script>
+    var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+    var map = L.map('map').setView([55.16, 24.88], 6);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    var featureGroup = new L.FeatureGroup().addTo(map);
+
+    var drawControl = new L.Control.Draw({
+      draw: {
+        polygon: false,
+        polyline: false,
+        circle: false,
+        circlemarker: false,
+        marker: true,
+        rectangle: false,
+      },
+      edit: {
+        featureGroup: featureGroup,
+        remove: true
+      }
+    });
+
+    map.addControl(drawControl);
+
+    map.on('draw:created', function (event) {
+      var layer = event.layer;
+
+      $('#waypointModal').modal('show');
+
+      currentLayer = layer;
+      });
+
+      function coordImageUpload(file){
+        var image = file.getAttribute('image');
+        var title = file.getAttribute('title');
+        var description = file.getAttribute('description');
+        var latitude = file.getAttribute('latitude');
+        var longitude = file.getAttribute('longitude');
+
+        var marker = L.marker([latitude, longitude]).addTo(map);
+        marker.bindPopup("<b>Pavadinimas: </b>" + title + "<br><b>Aprašas: </b>" + description + "<br><b>Koordinatės: </b>" + latitude, longitude + "<br><br><img src='" + image + "' style='width: 200px; height: 200px;'>").openPopup();
+
+        marker.description = description;
+        marker.title = title;
+
+        featureGroup.addLayer(marker);
+      }
+      function saveDataModal() {
+
+      //javascript promptai
+      var title = $('#titleInput').val();
+      var description = $('#descriptionInput').val();
+      var imageFile = $('#imageInput')[0];
+
+      if (imageInput.files && imageInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+        //pagal ivestus prompto duomenis uzfiksuoti duomenis kad rodyti per waypointsus
+        currentLayer.title = title;
+        currentLayer.description = description;
+        currentLayer.imageFile = e.target.result;
+
+        //waypointso popupsas
+        currentLayer.bindPopup("<b>" + title + "</b><br>" + description + "<br><img src='" + e.target.result + "' style='width: 200px; height: 200px;'>").openPopup();
+
+        //layer
+        featureGroup.addLayer(currentLayer);
+
+        $('#waypointModal').modal('hide');
+      };
+
+      reader.readAsDataURL(imageInput.files[0]);
+    }
+  }
+//paiimti objekto ft pagal kelia iki failo
+    function getImageUrl(imageFileName) {
+      var baseImageUrl = 'images/';
+      return baseImageUrl + imageFileName
+    }
+  
+    function saveWaypoints() {   
+      //layersai
+      var layers = featureGroup.getLayers();
+      console.log('Feature Group Layers:', featureGroup.getLayers());
+      //esamu zymiu leaflete saugojimas
+      var waypoints = layers.map(function (layer) {
+        return {
+          latitude: layer.getLatLng().lat,
+          longitude: layer.getLatLng().lng,
+          title: layer.title,
+          description: layer.description,
+          imageFile: layer.imageFile,
+        };
+      });
+
+      console.log('Waypoints', waypoints);
+
+      var map_name = document.getElementById('irojly').value;
+      var map_description = document.getElementById('i46j52').value;
+      console.log('Map Name:', map_name);
+      console.log('Map Description:', map_description);
+      //issaugoti naujai sukurtus waypointsus su ajax request
+      $.ajax({
+        type: 'POST',
+        url: '/mapcreate/', 
+        data: {
+          csrfmiddlewaretoken: csrfToken,
+          waypoints: JSON.stringify(waypoints),
+          map_name: map_name,
+          map_description: map_description,
+        },
+        success: function (response) {
+          //window.location.href = '{% url "Mapview" %}';
+          console.log('Map and waypoints saved successfully');
+        },
+        error: function (error) {
+          console.error('Error saving map and waypoints:', error);
+        }
+      });
+    }
+  </script>
+
+<footer class="text-center p-4">©qam1le, 2023<br>qam1le@mail.lt</footer>
+{{ redirect_to_login_immediately }}
+</body>
+
+</html>
+{% endif %}

@@ -11,8 +11,7 @@ class ImageUploadForm(forms.ModelForm):
                 'class': "form-control"
             }),
             'notes': TextInput(attrs={
-                'class': "form-control",
-                'style': "height:128px;"
+                'class': "form-control"
             })
         }
 
@@ -20,3 +19,8 @@ class GoogleVisionForm(forms.ModelForm):
      class Meta:
         model = GoogleVisionModel
         fields = '__all__'
+
+#class MapCreationForm(forms.ModelForm):
+    #class Meta:
+    #    model = MapCreation
+     #   fields = '__all__'

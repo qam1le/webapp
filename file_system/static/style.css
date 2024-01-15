@@ -160,3 +160,9 @@ details[open] summary {
     width: 20%;
     height: 20%;
 }
+
+.footer {
+    bottom: 0; 
+    text-align: center;
+    width: 100%;
+}

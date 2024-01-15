@@ -21,6 +21,8 @@
             <li><a href="{% url 'Homepage' %}">Pagrindinis</a></li>
             <li><a href="{% url 'Toolpage' %}">Įrankis</a></li>
             <li><a href="{% url 'Toolqueries' %}">Užklausos</a></li>
+            <li><a href="{% url 'Mapcreate' %}">Žemėlapio kūrimas</a></li>
+            <li><a href="{% url 'Mapview' %}">Žemėlapiai</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'Logout' %}"><span class="glyphicon glyphicon-user"></span> Atsijungti</a></li>
@@ -29,7 +31,13 @@
       </nav>
 
     <br><br>
-
+    {% if messages %}
+    {% for message in messages %}
+        <div class="message text-center alert alert-info {{message.tags}}">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
     {% if image %}
 
     <div class="container">
@@ -62,3 +70,8 @@
     {%endif%}
 
 {%endif%}
+</div>
+</div>
+<footer class="text-center p-4">©qam1le, 2023<br>qam1le@mail.lt</footer>
+{{ redirect_to_login_immediately }}
+</body>

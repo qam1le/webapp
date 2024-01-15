@@ -30,7 +30,7 @@
 
     {% if messages %}
     {% for message in messages %}
-        <div style="background-color: red; color:white; border-radius:20px;" class="alert-dismissible" role="alert">
+        <div class="message text-center alert alert-info {{message.tags}}">
             {{ message }}
         </div>
     {% endfor %}
@@ -43,5 +43,5 @@
 
         <p>NORINT NAUDOTIS, PRISIJUNKITE!!!</p>
       </div>
-
+      <footer class="text-center p-4">©qam1le, 2023<br>qam1le@mail.lt</footer>
 </body>

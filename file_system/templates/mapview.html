@@ -1,0 +1,151 @@
+{% if user.is_authenticated %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <title>MapView</title>
+  <meta name="generator" content="GrapesJS Studio">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index,follow">
+  
+  <link rel="stylesheet" href="{% static 'grapejs.css' %}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""></script>
+  {% csrf_token %}
+</head>
+
+<body id="ix7o4f">
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{% url 'Homepage' %}">KamiWeb</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li><a href="{% url 'Homepage' %}">Pagrindinis</a></li>
+        <li><a href="{% url 'Toolpage' %}">Įrankis</a></li>
+        <li><a href="{% url 'Toolqueries' %}">Užklausos</a></li>
+        <li><a href="{% url 'Mapcreate' %}">Žemėlapio kūrimas</a></li>
+        <li class="active"><a href="{% url 'Mapview' %}">Žemėlapiai</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{% url 'Logout' %}"><span class="glyphicon glyphicon-user"></span> Atsijungti</a></li>
+      </ul>
+    </div>
+  </nav>
+  {% if messages %}
+  {% for message in messages %}
+      <div class="message text-center alert alert-info {{message.tags}}">
+          {{ message }}
+      </div>
+  {% endfor %}
+  {% endif %}
+  
+  <section class="gjs-section" id="mapSelectionSection">
+    <div class="gjs-container">
+      <label for="mapSelector">Pasirinkite žemėlapį:</label>
+      <select class="btn-group" id="mapSelector" onload="changeMap()" onchange="changeMap()" >
+        {% for map in maps %}
+        <option value="{{ map.id }}">{{ map.map_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </section>
+
+  <div class="btn-group">
+    <button type="submit" class="btn btn-danger">
+      {% for map in maps %}
+      {% if map.id %}
+      <a href="{% url 'Deletemap' map_id=map.id %}"
+      {% endif %}
+      {%endfor%}>
+      IŠTRINTI
+    </a>
+    </button>
+    </div>
+  
+
+  
+
+
+  <section class="gjs-section" id="iersem">
+    <div class="gjs-container">
+      
+      <div class="gjs-grid-row" id="ip95gd">
+        <div class="gjs-grid-column" id="map" style="height: 600px; width: 600px;">
+        </div>
+
+        <script>
+          var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+          
+          var map = L.map('map').setView([55.16, 23.88], 6);
+          L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          }).addTo(map);
+          
+          var featureGroup = L.featureGroup().addTo(map);
+
+          function changeMap() {
+            var selectedMapId = document.getElementById('mapSelector').value;
+
+            $.ajax({
+              type: 'GET',
+              url: `/get_waypoints/${selectedMapId}/`,
+
+              success: function(response) {
+                mapWaypoints(response);
+              }
+            });
+
+          }
+          function mapWaypoints(waypoints) {
+            featureGroup.clearLayers();
+
+            waypoints.forEach(function (waypoint) {
+                var marker = L.marker([waypoint.latitude, waypoint.longitude]).addTo(featureGroup);
+                
+                var waypointid = waypoint.image_upload_id
+                var path = null;
+                {% for img in image %}
+                {% if img.id == waypointid %}
+                var imgpath = "{{img.image_file.url}}";
+                path = imgpath;
+                //image.waypointid.image_file.url
+                {%endif%}
+                {%endfor%}
+                console.log(path)
+                var popupContent =
+                "<b>Pavadinimas: </b>" + waypoint.title +
+                "<br><b>Aprašas: </b>" + waypoint.description +
+                "<br><b>Koordinatės: </b>" + waypoint.latitude + ", " + waypoint.longitude +
+                "<br><br><img src='" + path + "' style='width: 200px; height: 200px;'>";
+
+                marker.bindPopup(popupContent);
+              });
+            
+          }
+
+
+        </script>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="text-center p-4">©qam1le, 2023<br>qam1le@mail.lt</footer>
+  {{ redirect_to_login_immediately }}
+</body>
+</html>
+{% endif %}

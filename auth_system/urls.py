@@ -11,7 +11,8 @@ urlpatterns = [
 
     path('home/', Homepage, name='Homepage'),
     path('logout/', Logout, name='Logout'),
-    
-    #path('reset_password', resetPassword, name='Resetpswd'),
-    #path('reset/<uidb64>/<token>', confirmReset, name='Resetconfirm'),
+
+    #path('save_map/', save_map_view, name='save_map_view'),
+    path('reset_password', resetPassword, name='Resetpswd'),
+    path('reset/<uidb64>/<token>', confirmReset, name='Resetconfirm'),
 ]

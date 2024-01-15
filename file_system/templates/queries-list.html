@@ -23,6 +23,8 @@
             <li><a href="{% url 'Homepage' %}">Pagrindinis</a></li>
             <li><a href="{% url 'Toolpage' %}">Įrankis</a></li>
             <li class="active"><a href="{% url 'Toolqueries' %}">Užklausos</a></li>
+            <li><a href="{% url 'Mapcreate' %}">Žemėlapio kūrimas</a></li>
+            <li><a href="{% url 'Mapview' %}">Žemėlapiai</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'Logout' %}"><span class="glyphicon glyphicon-user"></span> Atsijungti</a></li>
@@ -41,16 +43,33 @@
     {% endfor %}
     {% endif %}
 
-    <div class="container" style="width: 100%">
-        <h2>JŪSŲ UŽKLAUSŲ ISTORIJA</h2>
+    <div style="width: 100%;" class="container">
+        <b>NUOTRAUKŲ PAIEŠKA PAGAL ŽYMES</b>
+        <select class="btn-group" id="labelSelector" onload="removeDups()" onchange="searchLabel()">
+          {% for goo in google %}
+          {% for label in goo.labels %}
+          <option value="{{ label }}">{{ label }}</option>
+          {% endfor %}
+          {% endfor %}
+        </select>
+      </div>
+      <h2>JŪSŲ UŽKLAUSŲ ISTORIJA</h2>
 
         <input class="form-control" id="myInput" type="text" placeholder="Užklausų paieška...">
 
         <br>
+
+
         <div class="row" id="images">
         {% for img in image %}
           <div class="col-md-4">
-            <div class="thumbnail">
+            <div class="thumbnail"
+            {% for goo in google %}
+            {% if goo.image_id == img.id %}
+            data-target="{{goo.labels}}"
+            {% endif %}
+            {%endfor%}
+            >
               <a href="#" target="_blank" data-toggle="modal" data-target="#myModal{{img.id}}">
                 <h4 style="text-decoration: none; color:black; font-weight: bold;">{{ img.image_name }}</h4>
                 <img src="{{ img.image_file.url }}" alt="{{ img.image_name }}" style="width: 200px; height: 200px;">
@@ -92,20 +111,18 @@
                     {% for goo in google %}
                     <tbody>
                       <tr>
-                        {% if goo is not None and goo != 0 %}
+                        {% if goo.description != "" and goo.image_id == img.id%}
 
                           <td>{{ goo.description }}</td>
                           <td>{{ goo.latitude }} , {{ goo.longitude }}</td>
                           <td>{{ goo.score }}%</td>
 
-                        {% elif goo is None and goo == 0 and img.lat != 0 %}
+                        {% elif img.lat != 0.000000000000000 %}
                           <td>-</td>
                           <td>{{ img.lat }} , {{ img.lon }}</td>
                           <td>-</td>
                         {% else %}
-                          <td>-</td>
-                          <td>-</td>
-                          <td>-</td>
+
                         {%endif%}
                       </tr>
                     </tbody>
@@ -124,7 +141,9 @@
         </div>
       </div>
           {% empty %}
-          <p class="details">Ką nors <a href="{% url 'Toolpage' %}">įkelkite</a></p>
+          <div class="container">
+          <p class="details">Ką nors <a class="btn btn-primary" href="{% url 'Toolpage' %}">įkelkite</a></p>
+        </div>
           {% endfor %}
 
         </div>
@@ -140,6 +159,35 @@
             });
           });
         });
+
+        function removeDups() {
+          var itemList = document.querySelectorAll('.labelSelector');
+          console.log(itemList);
+        }
+        function searchLabel() {
+          var selectedItem = document.getElementById('labelSelector').value;
+          var labelItems = document.querySelectorAll('.thumbnail[data-target]');
+          var queries = Array.from(labelItems).map(function(element) {
+            return element.getAttribute('data-target').trim().split(' ');
+          });
+
+          queries = [].concat.apply([], queries).join(' ');
+          //console.log(typeof(queries));
+          //console.log(queries);
+
+          for (var i=0; i<labelItems.length; i++) {
+            var value = labelItems[i].getAttribute('data-target');//.trim().split(' ');
+            //console.log(value);
+            if (value.includes(selectedItem)) {
+              labelItems[i].style.display = 'block';
+            } else {
+              labelItems[i].style.display = 'none';
+            }
+          }
+        }
         </script>
+
+<footer class="text-center p-4">©qam1le, 2023<br>qam1le@mail.lt</footer>
+{{ redirect_to_login_immediately }}
 </body>
 {% endif %}
