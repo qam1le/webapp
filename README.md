@@ -10,6 +10,7 @@ Pagrindinis funkcionalumas:
 |   |   |
 | ------ | ------ |
 | Django | atvirojo kodo karkasas, palengvinantis web kūrimą naudojant Python kalbą (papildomai, nuolatos yra išleidžiami saugumo atnaujinimai - mažesnė žmogiškų klaidų tikimybė, didesnis saugumas) |
+| Leaflet | atvirojo kodo interaktyvių žemėlapių kūrimo Javascript biblioteka, naudota žemėlapio valdymo funkcijai realizuoti
 | Bootstrap | CSS dizaino kūrimas, pritaikomumas įvairiems ekrano dydžiams |
 | MySQL | duomenų bazė |
 | Vision AI | nuotraukų analizei naudojamas mašininis modelis (koordinatės pagal didžiausią pasitikėjimo indeksą turintį objektą (angl. The Confidence Score) ir charakteristikų sąrašo grąžinimas (angl. labels), kurie naudojami nuotraukų filtravimui |
